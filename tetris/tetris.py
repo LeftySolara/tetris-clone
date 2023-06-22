@@ -1,7 +1,7 @@
 import pygame
 from dataclasses import dataclass
 from game_state import GameState
-from game_state import StateError
+import event.event as game_event
 
 TARGET_FPS = 60
 SCREENRECT = pygame.Rect(0, 0, 1024, 768)
@@ -17,46 +17,28 @@ class Tetris:
     @classmethod
     def create(cls, fullscreen=False):
         game = cls(
-            screen=None,
-            screen_rect=SCREENRECT,
-            fullscreen=fullscreen,
-            state=GameState.initializing,
+            screen=None, screen_rect=SCREENRECT, fullscreen=fullscreen, state=None
         )
         game.init()
         return game
-
-    def set_state(self, new_state: GameState):
-        self.state = new_state
-
-    def assert_state_is(self, *expected_states: GameState):
-        if self.state not in expected_states:
-            raise StateError(
-                f"Expected the game state to be one of {expected_states} not {self.state}."
-            )
 
     def quit(self):
         pygame.quit()
 
     def start_game(self):
-        self.assert_state_is(GameState.initialized)
-        self.set_state(GameState.main_menu)
+        self.state.start_game()
         self.loop()
 
     def loop(self):
-        while self.state != GameState.quitting:
-            if self.state == GameState.main_menu:
-                # pass control to game menu's loop
-                pass
-            elif self.state == GameState.game_playing:
-                # ... etc ...
-                pass
-        self.quit()
+        pass
 
     def init(self):
         """Initializes Pygame display and audio mixer."""
-        self.assert_state_is(GameState.initializing)
 
         pygame.init()
+
+        self.state = GameState()
+        self.state.initialize()
 
         window_style = pygame.FULLSCREEN if self.fullscreen else 0
         bit_depth = pygame.display.mode_ok(self.screen_rect.size, window_style, 32)
@@ -68,4 +50,4 @@ class Tetris:
 
         self.screen = screen
 
-        self.set_state(GameState.initialized)
+        self.state.finish_initializing()

@@ -1,37 +1,64 @@
-import enum
+import pygame
+import event.event as game_event
+from transitions import Machine
 
 
-class GameState(enum.Enum):
-    """Enum for the game's state machine."""
+class GameState(Machine):
+    """An object representing the game's state.
 
-    """Unknown state, indicating possible error or misconfiguration."""
-    unknown = "unknown"
+    This object contains a finite state machine that houses states
+    and transitions related to game state.
 
-    """The state the game engine would rightly be set to before
-    anything is initialized or configured."""
-    initializing = "initializing"
-
-    """The game engine is initialized: pygame is configured, the sprite
-    images are loaded, etc."""
-    initialized = "initialized"
-
-    """The game engine is in game playing mode."""
-    game_playing = "game_playing"
-
-    """The game engine is in the main menu."""
-    main_menu = "main_menu"
-
-    """The game engine is rendering the game ended screen."""
-    game_ended = "game_ended"
-
-    """The game engine is exiting and is unwinding."""
-    quitting = "quitting"
-
-
-class StateError(Exception):
-    """An error in the game's state.
-
-    This is raised if the game is in an unexpected game state at a point
-    where we expect it to be in a different state. For instance, to
-    start the game loop we must be initialized.
+    Attributes:
+        states: A list of possible states for the machine.
+        transitions: A list of dictionaries containing transition information.
     """
+
+    states = [
+        "unknown",
+        "initializing",
+        "initialized",
+        "game_playing",
+        "main_menu",
+        "game_ended",
+        "quitting",
+    ]
+
+    transitions = [
+        {"trigger": "initialize", "source": "unknown", "dest": "initializing"},
+        {
+            "trigger": "finish_initializing",
+            "source": "initializing",
+            "dest": "initialized",
+        },
+        {"trigger": "open_main_menu", "source": "initialized", "dest": "main_menu"},
+        {"trigger": "open_main_menu", "source": "game_ended", "dest": "main_menu"},
+        {"trigger": "start_game", "source": "main_menu", "dest": "game_playing"},
+        {"trigger": "end_game", "source": "game_playing", "dest": "game_ended"},
+        {"trigger": "quit", "source": "game_ended", "dest": "quitting"},
+        {"trigger": "finish_quitting", "source": "quitting", "dest": "unknown"},
+    ]
+
+    def __init__(self):
+        Machine.__init__(
+            self,
+            model=self,
+            states=GameState.states,
+            transitions=GameState.transitions,
+            initial="unknown",
+            auto_transitions=False,
+            before_state_change="assign_prev_state",
+            after_state_change="post_state_change",
+        )
+        self.prev_state = "unknown"
+
+    def assign_prev_state(self):
+        self.prev_state = self.state
+
+    def post_state_change(self):
+        pygame.event.post(
+            pygame.event.Event(
+                game_event.GAME_STATE_CHANGE,
+                {"prev": self.prev_state, "current": self.state},
+            )
+        )
