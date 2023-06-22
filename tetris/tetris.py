@@ -1,6 +1,6 @@
 import pygame
 from dataclasses import dataclass
-from state.state import GameState
+from tetris.state.game_state import GameState
 
 TARGET_FPS = 60
 SCREENRECT = pygame.Rect(0, 0, 1024, 768)

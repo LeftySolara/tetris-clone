@@ -8,17 +8,11 @@ Subpackages
    :maxdepth: 4
 
    tetris.assets
+   tetris.event
+   tetris.state
 
 Submodules
 ----------
-
-tetris.game\_state module
--------------------------
-
-.. automodule:: tetris.game_state
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 tetris.main module
 ------------------

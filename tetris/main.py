@@ -1,4 +1,4 @@
-from tetris import Tetris
+from tetris.tetris import Tetris
 
 
 def start_game():

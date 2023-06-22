@@ -1,5 +1,5 @@
 import pygame
-import event.event as game_event
+import tetris.event.game_event as game_event
 from transitions import Machine
 
 
@@ -8,10 +8,6 @@ class GameState(Machine):
 
     This object contains a finite state machine that houses states
     and transitions related to game state.
-
-    Attributes:
-        states: A list of possible states for the machine.
-        transitions: A list of dictionaries containing transition information.
     """
 
     states = [
