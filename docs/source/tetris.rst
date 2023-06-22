@@ -1,31 +1,29 @@
 tetris package
 ==============
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   tetris.assets
-   tetris.event
-   tetris.state
-
 Submodules
 ----------
 
-tetris.main module
-------------------
+tetris.event module
+-------------------
 
-.. automodule:: tetris.main
+.. automodule:: tetris.event
    :members:
    :undoc-members:
    :show-inheritance:
 
-tetris.tetris module
---------------------
+tetris.game module
+------------------
 
-.. automodule:: tetris.tetris
+.. automodule:: tetris.game
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tetris.state module
+-------------------
+
+.. automodule:: tetris.state
    :members:
    :undoc-members:
    :show-inheritance:
