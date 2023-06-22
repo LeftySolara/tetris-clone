@@ -1,7 +1,6 @@
 import pygame
 from dataclasses import dataclass
-from game_state import GameState
-import event.event as game_event
+from state.state import GameState
 
 TARGET_FPS = 60
 SCREENRECT = pygame.Rect(0, 0, 1024, 768)
